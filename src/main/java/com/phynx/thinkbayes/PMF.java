@@ -10,10 +10,7 @@ import java.util.ArrayList;
  * @since 11/6/13 12:51 AM
  */
 public class PMF {
-    private ArrayList<DistributionValue> list = new ArrayList<DistributionValue>();
-    //private int totalOccurance = 0;
-
-
+    protected ArrayList<DistributionValue> list = new ArrayList<DistributionValue>();
     /**
      * Set the probability
      * @param val distribution value
@@ -116,6 +113,28 @@ public class PMF {
         }
         return null;
     }
+
+
+    /**
+     * Get credible interval for given percentile
+     * @param percentile if 0 return null
+     * @return
+     */
+    public String credibleInterval(int percentile) {
+        if (percentile < 1) return null;
+        float p = (float) percentile / (float) 100;
+        float total = 0;
+        for (int __i = 0; __i < list.size(); __i++) {
+            DistributionValue __t = list.get(__i);
+            total += __t.probability;
+            if (total >= p) {
+                return __t.val;
+            }
+        }
+        return null;
+    }
+
+
 
 
     /**

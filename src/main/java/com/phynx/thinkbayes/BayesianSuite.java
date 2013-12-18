@@ -63,4 +63,11 @@ public abstract class BayesianSuite extends PMF {
      * @return
      */
     public abstract float getLikelihood(String hypo, Object data);
+
+
+    /**
+     * If we need to clear the distrubution list
+     */
+    protected void clearDistributionList() { list.clear();}
+
 }
