@@ -1,5 +1,6 @@
 package com.phynx.thinkbayes;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -10,7 +11,16 @@ import java.util.ArrayList;
  * @since 11/6/13 12:51 AM
  */
 public class PMF {
+    /**
+     * The list
+     */
     protected ArrayList<DistributionValue> list = new ArrayList<DistributionValue>();
+
+    /**
+     * The Decimal Format
+     */
+    protected DecimalFormat decimalFormat = new DecimalFormat("0.####");
+
     /**
      * Set the probability
      * @param val distribution value
@@ -63,14 +73,30 @@ public class PMF {
      * Print info
      */
     public void printMe() {
-        StringBuilder sb = new StringBuilder("{");
+        printMe(false);
+    }
+
+
+    /**
+     * Print info
+     */
+    public void printMe(boolean tabular) {
+        StringBuilder sb =  null;
+        if (tabular) sb = new StringBuilder("");
+        else sb = new StringBuilder("{");
+
         int counter = 0;
         for (DistributionValue di : list) {
-            if (counter > 0) sb.append(",");
-            sb.append("{" + di.val + "," + di.probability + "}");
+            if (!tabular) {
+                if (counter > 0) sb.append(",");
+                sb.append("{" + di.val + "," + di.probability + "}");
+            } else {
+                sb.append(di.val + "\t" + decimalFormat.format(di.probability));
+                sb.append('\n');
+            }
             counter++;
         }
-        sb.append("}");
+        if (!tabular) sb.append("}");
         System.out.println(sb.toString());
     }
 
@@ -80,6 +106,7 @@ public class PMF {
      */
     public void normalize() {
         final float totalOccurance = sumProbability();
+        if (totalOccurance == 0) return;
         for (DistributionValue di : list) {
             di.probability = di.probability/totalOccurance;
         }
@@ -116,11 +143,25 @@ public class PMF {
 
 
     /**
-     * Get credible interval for given percentile
+     * Get credible interval, getting the percentile of 5% and 95%
+     *
+     * @return
+     */
+    public CredibleInterval credibleInterval() {
+        CredibleInterval ci = new CredibleInterval();
+        ci.lowerBound = percentile(5);
+        ci.upperBound = percentile(95);
+        return ci;
+    }
+
+
+    /**
+     * Get percentile
+     *
      * @param percentile if 0 return null
      * @return
      */
-    public String credibleInterval(int percentile) {
+    public String percentile(int percentile) {
         if (percentile < 1) return null;
         float p = (float) percentile / (float) 100;
         float total = 0;
@@ -135,6 +176,49 @@ public class PMF {
     }
 
 
+    /**
+     * Get maximum likelihood
+     * @return
+     */
+    public MaximumLikelihood getMaximumLikelihood() {
+        MaximumLikelihood mlh = new MaximumLikelihood();
+        float _tmpprob = 0;
+        int _tmpval = 0;
+        for (int __i = 0; __i < list.size(); __i++) {
+            DistributionValue __t = list.get(__i);
+            try {
+                //int __tval = Integer.parseInt(__t.val);
+                //if (__tval > _tmpval) _tmpval = __tval;
+                if (__t.probability > _tmpprob) {
+                    _tmpprob = __t.probability;
+                    _tmpval = Integer.parseInt(__t.val);
+                }
+            } catch (Exception e) {
+                //skip this
+            }
+        }
+        mlh.value = _tmpval;
+        mlh.probability = _tmpprob;
+        return mlh;
+    }
+
+
+    /**
+     * Get mean
+     *
+     * @return
+     */
+    public float mean() {
+        float total = 0;
+        for (DistributionValue di : list) {
+            try {
+                total += (Float.valueOf(di.val) * di.probability);
+            } catch (Exception e) {
+                //should not happend
+            }
+        }
+        return total;
+    }
 
 
     /**

@@ -1,5 +1,6 @@
 package com.phynx.thinkbayes;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,6 +56,29 @@ public abstract class BayesianSuite extends PMF {
         }
         normalize();
     }
+
+
+    /**
+     * Same as the <code>updateProbability(String data)</code>
+     * but it update probability on data sets.
+     *
+     * @param datasets
+     *
+     */
+    public void updateCollectionProbability(List<String> datasets) {
+        for (String data : datasets) {
+            for (String hypo : this.hypothesis) {
+                float likelihood = getLikelihood(hypo, data);
+                multiplyProbability(hypo, likelihood);
+            }
+            normalize();
+        }
+        //System.out.println(list);
+
+    }
+
+
+
 
     /**
      * Get Likelihood

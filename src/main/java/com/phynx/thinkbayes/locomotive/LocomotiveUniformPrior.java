@@ -26,23 +26,6 @@ public class LocomotiveUniformPrior extends BayesianSuite {
     }
 
 
-    /**
-     * Get mean
-     * @return
-     */
-    public int mean() {
-        float total = 0;
-        for (DistributionValue di : list) {
-            try {
-                total += (Float.valueOf(di.val) * di.probability);
-            } catch (Exception e) {
-                //should not happend
-            }
-        }
-        return (int)total;
-    }
-
-
     @Override
     public float getLikelihood(String hypo, Object data) {
         if (!(data instanceof java.lang.String))

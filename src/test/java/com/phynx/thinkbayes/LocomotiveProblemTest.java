@@ -26,12 +26,17 @@ public class LocomotiveProblemTest {
         LocomotiveUniformPrior lup = new LocomotiveUniformPrior(hypos);
         lup.updateProbability("60");
         //lup.printMe();
-        System.out.println("Posterior Mean: " + lup.mean());
+        float mean = lup.mean();
+        assert((int)mean == 333);
 
+        System.out.println("Posterior Mean: " + mean);
 
         lup.updateProbability("30");
         lup.updateProbability("90");
-        System.out.println("After trained, now Posterior Mean: " + lup.mean());
+
+        mean = lup.mean();
+        assert ((int) mean == 164);
+        System.out.println("After trained, now Posterior Mean: " + mean);
 
 
         /**
@@ -42,13 +47,19 @@ public class LocomotiveProblemTest {
         lop.updateProbability("60");
         lop.updateProbability("90");
         //lop.printMe();
-        System.out.println("Alternate Prior Posterior Mean: " + lop.mean());
+
+        mean = lop.mean();
+        assert ((int) mean == 133);
+        System.out.println("Alternate Prior Posterior Mean: " + mean);
 
 
-        String credible5 = lop.credibleInterval(5);
-        String credible95 = lop.credibleInterval(95);
+        CredibleInterval ci = lop.credibleInterval();
+        String credible5 = ci.lowerBound;
+        String credible95 = ci.upperBound;
 
+        assert(credible5.equals("91"));
         System.out.println("Credible Interval (5%): " + credible5);
+        assert (credible95.equals("242"));
         System.out.println("Credible Interval (95%): " + credible95);
 
     }
