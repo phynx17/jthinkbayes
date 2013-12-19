@@ -28,7 +28,7 @@ public abstract class BayesianSuite extends PMF {
         if (hypothesis == null) throw new IllegalArgumentException("Hypothesis cannot be null");
         this.hypothesis = hypothesis;
         for (String __h : hypothesis) {
-            setProbability(new DistributionValue(__h,1));
+            addProbability(new DistributionValue(__h, 1));
         }
         normalize();
     }

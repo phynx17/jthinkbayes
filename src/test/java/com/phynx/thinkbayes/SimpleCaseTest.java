@@ -22,7 +22,7 @@ public class SimpleCaseTest {
         /*
         final int diceSide = 6;
         for (int x= 1; x < (diceSide+1); x++) {
-            pmf.setProbability(new PMF.DistributionValue(String.valueOf(x),(float) 1/diceSide));
+            pmf.addProbability(new PMF.DistributionValue(String.valueOf(x),(float) 1/diceSide));
         }
         */
 

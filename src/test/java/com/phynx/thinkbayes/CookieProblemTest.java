@@ -1,7 +1,6 @@
 package com.phynx.thinkbayes;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +21,8 @@ public class CookieProblemTest {
         final String[] hypothesis = {"Bowl 1", "Bowl 2"};
 
         PMF pmf = new PMF();
-        pmf.setProbability(new PMF.DistributionValue(hypothesis[0], (float) 0.5));
-        pmf.setProbability(new PMF.DistributionValue(hypothesis[1], (float) 0.5));
+        pmf.addProbability(new PMF.DistributionValue(hypothesis[0], (float) 0.5));
+        pmf.addProbability(new PMF.DistributionValue(hypothesis[1], (float) 0.5));
 
         pmf.printMe();
 

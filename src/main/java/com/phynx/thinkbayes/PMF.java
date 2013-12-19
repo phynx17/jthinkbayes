@@ -2,6 +2,9 @@ package com.phynx.thinkbayes;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Taken from ThinkBayes' PMF (Probability Mass Function)
@@ -14,7 +17,7 @@ public class PMF {
     /**
      * The list
      */
-    protected ArrayList<DistributionValue> list = new ArrayList<DistributionValue>();
+    protected List<DistributionValue> list = new ArrayList<DistributionValue>();
 
     /**
      * The Decimal Format
@@ -25,7 +28,8 @@ public class PMF {
      * Set the probability
      * @param val distribution value
      */
-    public void setProbability(DistributionValue val) {
+    public void addProbability(DistributionValue val) {
+        assert (val != null);
         list.add(val);
     }
 
@@ -127,6 +131,14 @@ public class PMF {
 
 
     /**
+     * Get all distribution values
+     * @return distribution values
+     */
+    public List<DistributionValue> getAllDistributionValue() {
+        return list;
+    }
+
+    /**
      * Get distribution value of given value
      * @param val value
      * @return
@@ -143,6 +155,7 @@ public class PMF {
 
 
     /**
+     * Use in Cumulative distribution functions (CDF)
      * Get credible interval, getting the percentile of 5% and 95%
      *
      * @return
@@ -156,6 +169,7 @@ public class PMF {
 
 
     /**
+     * Use in Cumulative distribution functions (CDF)
      * Get percentile
      *
      * @param percentile if 0 return null
@@ -222,10 +236,79 @@ public class PMF {
 
 
     /**
+     * Make CDF of maximum K selection of this item lists
+     * @param k selection
+     * @return the CDF
+     */
+    public CDF makeCDFMaxOfK(int k) {
+        CDF cdf = makeCDF();
+        for (DistributionValue value : cdf.getAllDistributionValue()) {
+            value.probability = (float) Math.pow(value.probability,k);
+        }
+        return cdf;
+    }
+
+
+
+    /**
+     * Get mqximum PMF
+     *
+     * @param aPMF a PMF
+     * @param aOtherPMF other PMF
+     * @return new max PMF
+     */
+    public static PMF pmfMax(PMF aPMF, PMF aOtherPMF) {
+        assert(aPMF != null);
+        assert (aOtherPMF != null);
+        PMF maxPMF = new PMF();
+        List<DistributionValue> that = aOtherPMF.getAllDistributionValue();
+        for (DistributionValue di : aPMF.list) {
+            for (DistributionValue thatValue : that) {
+                int iMax = Math.max(Integer.parseInt(di.val),Integer.parseInt(thatValue.val));
+                String val = String.valueOf(iMax);
+                float totalProb = di.probability * thatValue.probability;
+                DistributionValue lVal = maxPMF.getDistributionValue(val);
+                if (lVal != null) {
+                    lVal.probability += totalProb;
+                } else {
+                    maxPMF.addProbability(new DistributionValue(val, totalProb));
+                }
+
+            }
+        }
+        return maxPMF;
+    }
+
+
+    /**
+     * Make CDF from this list
+     * @return CDF
+     */
+    public CDF makeCDF() {
+        float totalSum = sumProbability();
+
+        List<DistributionValue> dist = new ArrayList<DistributionValue>();
+
+        for (int __i = 0; __i < list.size(); __i++) {
+            DistributionValue __t = list.get(__i);
+            totalSum += __t.probability;
+            DistributionValue _v = new DistributionValue(__t.val, totalSum);
+            dist.add(_v);
+        }
+        for (int __i = 0; __i < dist.size(); __i++) {
+            DistributionValue __t = dist.get(__i);
+            __t.probability = __t.probability / totalSum;
+        }
+        return new CDF(dist);
+    }
+
+
+
+    /**
      * Sum probability for all distribution
      * @return
      */
-    private float sumProbability() {
+    protected float sumProbability() {
         float sum = 0;
         for (int __i = 0; __i < list.size(); __i++) {
             DistributionValue __t = list.get(__i);

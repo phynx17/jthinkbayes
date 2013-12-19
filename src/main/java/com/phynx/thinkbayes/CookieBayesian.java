@@ -19,7 +19,7 @@ public class CookieBayesian extends BayesianSuite {
     public CookieBayesian(String[] hypothesis) {
         super(hypothesis);
         for (String __h : hypothesis) {
-            setProbability(new DistributionValue(__h,1));
+            addProbability(new DistributionValue(__h, 1));
         }
         normalize();
     }

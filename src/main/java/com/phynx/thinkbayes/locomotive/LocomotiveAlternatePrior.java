@@ -35,7 +35,7 @@ public class LocomotiveAlternatePrior extends LocomotiveUniformPrior {
         this.alpha = alpha;
         this.hypothesis = hypothesis;
         for (String __h : hypothesis) {
-            setProbability(new DistributionValue(__h,Float.valueOf(__h)));
+            addProbability(new DistributionValue(__h, Float.valueOf(__h)));
         }
         normalize();
 
@@ -47,12 +47,12 @@ public class LocomotiveAlternatePrior extends LocomotiveUniformPrior {
      * Override the existing
      * @param val distribution value
      */
-    public void setProbability(DistributionValue val) {
+    public void addProbability(DistributionValue val) {
         assert(val != null);
         if (val.val.equals("0")) return;
         val.probability = (float)Math.pow(val.probability,(this.alpha*-1));
         //System.out.println(val.val + " --> " + val.probability);
-        super.setProbability(val);
+        super.addProbability(val);
     }
 
 

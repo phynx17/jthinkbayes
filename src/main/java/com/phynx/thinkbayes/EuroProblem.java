@@ -48,7 +48,7 @@ class TrianglePrior extends  EuroProblem {
         for (String __h : hypothesis) {
             int _x = Integer.parseInt(__h);
             if (l < median)
-                setProbability(new DistributionValue(__h,_x));
+                addProbability(new DistributionValue(__h, _x));
             l++;
         }
 
@@ -56,7 +56,7 @@ class TrianglePrior extends  EuroProblem {
         for (String __h : hypothesis) {
             int _x = Integer.parseInt(__h);
             if (l >= median)
-                setProbability(new DistributionValue(__h,100-_x));
+                addProbability(new DistributionValue(__h, 100 - _x));
             l++;
         }
         normalize();
